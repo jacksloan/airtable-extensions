@@ -67,7 +67,10 @@ export class AirtableRateLimitingCache {
   readonly cache$: BehaviorSubject<Record<string, CacheItem>> =
     new BehaviorSubject({});
 
-  constructor(public throttleTime = 5000) {
+  constructor(
+    // The API is limited to 5 requests per second per base. If you exceed this rate, you will receive a 429 status code and will need to wait 30 seconds before subsequent requests will succeed.
+    public throttleTime = 250
+  ) {
     this.pendingByRequestId$ = merge(this.requests$, this.responses$).pipe(
       scan((acc, curr) => {
         if (curr.type === 'RESPONSE') delete acc[curr.requestId];
