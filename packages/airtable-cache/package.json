@@ -1,4 +1,11 @@
 {
   "name": "@airtable-extensions/airtable-cache",
-  "version": "0.0.1"
+  "version": "0.0.1",
+  "dependencies": {
+    "airtable": "^0.11.1",
+    "lodash": "^4.17.21",
+    "rxjs": "^6.6.7",
+    "tslib": "^2.0.0",
+    "uuid": "^8.3.2"
+  }
 }
