@@ -15,6 +15,9 @@
   "projects": {
     "airtable-cache": {
       "tags": []
+    },
+    "airtable-codegen": {
+      "tags": []
     }
   }
 }

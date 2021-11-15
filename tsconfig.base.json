@@ -17,6 +17,9 @@
     "paths": {
       "@airtable-extensions/airtable-cache": [
         "packages/airtable-cache/src/index.ts"
+      ],
+      "@airtable-extensions/airtable-codegen": [
+        "packages/airtable-codegen/src/index.ts"
       ]
     }
   },
