@@ -112,9 +112,17 @@ export class AirtableRateLimitingCache {
           );
         })
       )
-      .subscribe();
+      .subscribe(); // TODO, don't forget to unsubscribe
   }
 
+  /**
+   * Schedules an API request for airtable.
+   * Depending on the cache options a cached value could be returned
+   * immediately or a request will be added to the queue for later execution
+   * @param options
+   * @param request
+   * @returns
+   */
   public async schedule<T>(
     options: AirtableCacheOptions,
     request: Promise<T>
