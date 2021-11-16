@@ -90,12 +90,14 @@ type lookupType<T> = T extends booleanType
   : T;
 
 type Api<spec> = {
-  [k in keyof spec]: {
+  [tableKey in keyof spec]: {
     findAll(options?: {
-      sort?: Array<{ field: keyof spec[k]; direction: 'asc' | 'desc' }>;
+      sort?: Array<{ field: keyof spec[tableKey]; direction: 'asc' | 'desc' }>;
     }): Promise<
       Array<{
-        [t in keyof spec[k]]: lookupType<spec[k][t]>;
+        [fieldKey in keyof spec[tableKey]]: lookupType<
+          spec[tableKey][fieldKey]
+        >;
       }>
     >;
   };
