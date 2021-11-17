@@ -13,9 +13,6 @@
     }
   },
   "projects": {
-    "airkit": {
-      "tags": []
-    },
     "airtable-cache": {
       "tags": []
     },
