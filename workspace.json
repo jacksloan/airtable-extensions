@@ -33,38 +33,6 @@
         }
       }
     },
-    "airtable-codegen": {
-      "root": "packages/airtable-codegen",
-      "sourceRoot": "packages/airtable-codegen/src",
-      "projectType": "library",
-      "targets": {
-        "build": {
-          "executor": "@nrwl/workspace:tsc",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "outputPath": "dist/packages/airtable-codegen",
-            "main": "packages/airtable-codegen/src/index.ts",
-            "tsConfig": "packages/airtable-codegen/tsconfig.lib.json",
-            "assets": ["packages/airtable-codegen/*.md"]
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "outputs": ["{options.outputFile}"],
-          "options": {
-            "lintFilePatterns": ["packages/airtable-codegen/**/*.ts"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/packages/airtable-codegen"],
-          "options": {
-            "jestConfig": "packages/airtable-codegen/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
     "example-next": {
       "root": "packages/example-next",
       "sourceRoot": "packages/example-next",
@@ -116,8 +84,7 @@
             "lintFilePatterns": ["packages/example-next/**/*.{ts,tsx,js,jsx}"]
           }
         }
-      },
-      "tags": []
+      }
     },
     "example-next-e2e": {
       "root": "packages/example-next-e2e",
@@ -143,9 +110,7 @@
             "lintFilePatterns": ["packages/example-next-e2e/**/*.{js,ts}"]
           }
         }
-      },
-      "tags": [],
-      "implicitDependencies": ["example-next"]
+      }
     }
   }
 }

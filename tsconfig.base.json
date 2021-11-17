@@ -19,9 +19,6 @@
       "$lib": ["apps/airkit/src/lib/index.ts"],
       "@airtable-extensions/airtable-api": [
         "packages/airtable-api/src/index.ts"
-      ],
-      "@airtable-extensions/airtable-codegen": [
-        "packages/airtable-codegen/src/index.ts"
       ]
     }
   },

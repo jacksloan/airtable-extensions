@@ -7,7 +7,7 @@ function Index({ places, people, locations }) {
       <section>
         <h2>Places</h2>
         <ul>
-          {places.map((p: Place) => (
+          {(places || []).map((p: Place) => (
             <>
               <li>
                 Name = {p.name}, Active = {p.active}
@@ -24,7 +24,7 @@ function Index({ places, people, locations }) {
       <section>
         <h2>People</h2>
         <ul>
-          {people.map((p: Person) => (
+          {(people || []).map((p: Person) => (
             <>
               <li>
                 First = {p.firstName}, Last = {p.lastName}
@@ -41,7 +41,7 @@ function Index({ places, people, locations }) {
       <section>
         <h2>Locations</h2>
         <ul>
-          {locations.map((l: Location) => (
+          {(locations || []).map((l: Location) => (
             <>
               <li>
                 Name = {l.name}, Description = {l.description}
@@ -58,9 +58,6 @@ export async function getStaticProps() {
   const places = await api.places.findAll();
   const locations = await api.locations.findAll();
   const people = await api.people.findAll();
-
-  console.log(places, locations, people);
-
   return {
     props: {
       places: places || [],

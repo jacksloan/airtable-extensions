@@ -115,6 +115,18 @@ export class AirtableRateLimitingCache {
         })
       )
       .subscribe(); // TODO, don't forget to unsubscribe
+
+    // this.pendingByRequestId$.subscribe((pendingByRequestId$) => {
+    //   console.log({ pendingByRequestId$ });
+    // });
+
+    // this.requests$.subscribe((requests$) => {
+    //   console.log({ requests$ });
+    // });
+
+    // this.responses$.subscribe((responses$) => {
+    //   console.log({ responses$ });
+    // });
   }
 
   /**
@@ -127,7 +139,7 @@ export class AirtableRateLimitingCache {
    */
   public async schedule<T>(
     options: AirtableCacheOptions,
-    request: Promise<T>
+    request: () => Promise<T>
   ): Promise<T | Error> {
     const { cacheKey } = options;
     let { queueStrategy, getExpiration } = options;
@@ -181,7 +193,7 @@ export class AirtableRateLimitingCache {
       })
     );
 
-    return response.toPromise();
+    return response.toPromise(); // use firstValueFrom once we can upgrade to latest rxjs
   }
 
   /**
@@ -195,18 +207,24 @@ export class AirtableRateLimitingCache {
   private addNewRequestOrAwaitExisting(
     cacheKey: string,
     getExpiration: () => number,
-    request: Promise<any>
-  ): Observable<QueueResponse> {
+    request: () => Promise<any>
+  ): Observable<any> {
     return this.pendingByCacheKey$.pipe(
       take(1),
       switchMap((pending) => {
         const pendingRequest = pending[cacheKey]?.[0];
         const requestId =
-          pendingRequest?.requestId || this.addToQueue(cacheKey, request);
+          pendingRequest?.requestId || this.addToQueue(cacheKey, request());
+
         return this.responses$.pipe(
           filter((res) => res.requestId === requestId),
+          take(1),
           map((res) => res.value),
           tap((value) => {
+            // console.log('setting cache item', {
+            //   cacheKey,
+            //   value,
+            // });
             if (!pendingRequest) {
               this.setCacheItem(cacheKey, { value, expires: getExpiration() });
             }

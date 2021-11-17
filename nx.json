@@ -16,8 +16,12 @@
     "airtable-api": {
       "tags": []
     },
-    "airtable-codegen": {
+    "example-next": {
       "tags": []
+    },
+    "example-next-e2e": {
+      "tags": [],
+      "implicitDependencies": ["example-next"]
     }
   },
   "cli": {

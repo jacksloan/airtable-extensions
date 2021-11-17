@@ -1,9 +1,5 @@
 import airtable from 'airtable';
-import {
-  AirtableCache,
-  AirtableQueueStrategy,
-  AirtableRateLimitingCache,
-} from '..';
+import { AirtableQueueStrategy, AirtableRateLimitingCache } from '..';
 
 type booleanType = 'boolean';
 type stringType = 'string';
@@ -43,27 +39,30 @@ export function createApi<S>(options: {
     get: function (target: any, prop: string, receiver: any) {
       return {
         async findAll(options?: { sort?: any }) {
-          const request = base
-            .table(prop as string)
-            .select(options)
-            .all()
-            .then((records) =>
-              records.map((r) =>
-                Object.keys((spec as any)[prop]).reduce((acc, curr) => {
-                  acc[curr] = r.get(curr) ?? null;
-                  return acc;
-                }, {} as any)
-              )
-            );
+          const request = async () => {
+            const records = await base
+              .table(prop as string)
+              .select(options)
+              .all();
 
-          return rateLimitingCache.schedule(
+            return records.map((r) =>
+              Object.keys((spec as any)[prop]).reduce((acc, curr) => {
+                acc[curr] = r.get(curr) ?? null;
+                return acc;
+              }, {} as any)
+            );
+          };
+
+          const response = await rateLimitingCache.schedule(
             {
-              cacheKey: `findAll-${prop}-${JSON.stringify(options || {})}`,
-              getExpiration: () => new Date().getTime() + 10_000,
-              queueStrategy: AirtableQueueStrategy.NONE_PENDING,
+              cacheKey: `findAll-${prop}`,
+              getExpiration: () => new Date().getTime() + 10_000, // cache item expires in 10 seconds
+              queueStrategy: AirtableQueueStrategy.EXPIRED, // only queue requests if an item is expired
             },
             request
           );
+
+          return response;
         },
       };
     },
