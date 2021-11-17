@@ -4,6 +4,8 @@
 /dist
 /tmp
 /out-tsc
+**/apps/**/.svelte-kit
+**/apps/**/node_modules
 
 # dependencies
 /node_modules

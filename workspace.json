@@ -1,6 +1,35 @@
 {
   "version": 2,
   "projects": {
+    "airkit": {
+      "root": "apps/airkit",
+      "projectType": "application",
+      "sourceRoot": "apps/airkit/src",
+      "targets": {
+        "build": {
+          "executor": "@nxext/sveltekit:sveltekit",
+          "options": {
+            "command": "build"
+          }
+        },
+        "serve": {
+          "executor": "@nxext/sveltekit:sveltekit",
+          "options": {
+            "command": "dev"
+          }
+        },
+        "add": {
+          "executor": "@nxext/sveltekit:add"
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["apps/airkit/**/*.{ts,svelte,spec.ts}"]
+          }
+        }
+      }
+    },
     "airtable-cache": {
       "root": "packages/airtable-cache",
       "sourceRoot": "packages/airtable-cache/src",
