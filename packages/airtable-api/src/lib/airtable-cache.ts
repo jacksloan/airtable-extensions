@@ -61,15 +61,17 @@ export class AirtableRateLimitingCache {
   readonly pendingByRequestId$: Observable<{ [k: string]: QueueRequest }>;
   readonly pendingByCacheKey$: Observable<{ [k: string]: QueueRequest[] }>;
   readonly lastRequestTime$: BehaviorSubject<number> = new BehaviorSubject(
-    new Date().getTime() - this.throttleTime
+    new Date().getTime() - this.config.throttleTime
   );
 
   readonly cache$: BehaviorSubject<Record<string, CacheItem>> =
     new BehaviorSubject({});
 
   constructor(
-    // The API is limited to 5 requests per second per base. If you exceed this rate, you will receive a 429 status code and will need to wait 30 seconds before subsequent requests will succeed.
-    public throttleTime = 250
+    public config = {
+      // The API is limited to 5 requests per second per base. If you exceed this rate, you will receive a 429 status code and will need to wait 30 seconds before subsequent requests will succeed.
+      throttleTime: 250,
+    }
   ) {
     this.pendingByRequestId$ = merge(this.requests$, this.responses$).pipe(
       scan((acc, curr) => {
@@ -223,7 +225,7 @@ export class AirtableRateLimitingCache {
    */
   private calculateDelayTime(
     lastRequestTime: number,
-    throttleTime = this.throttleTime
+    throttleTime = this.config.throttleTime
   ): number {
     const timeSinceLastRequest = new Date().getTime() - lastRequestTime;
     const delay = throttleTime - timeSinceLastRequest;
