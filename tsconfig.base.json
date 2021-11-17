@@ -16,13 +16,13 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "$lib": ["apps/airkit/src/lib/index.ts"],
       "@airtable-extensions/airtable-cache": [
         "packages/airtable-cache/src/index.ts"
       ],
       "@airtable-extensions/airtable-codegen": [
         "packages/airtable-codegen/src/index.ts"
-      ],
-      "$lib": ["apps/airkit/src/lib/index.ts"]
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

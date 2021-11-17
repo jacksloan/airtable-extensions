@@ -41,7 +41,7 @@ export function createApi<S>(options: {
             .all();
           return records.map((r) => {
             return Object.keys((spec as any)[prop]).reduce((acc, curr) => {
-              acc[curr] = r.get(curr);
+              acc[curr] = r.get(curr) ?? null;
               return acc;
             }, {} as any);
           });
