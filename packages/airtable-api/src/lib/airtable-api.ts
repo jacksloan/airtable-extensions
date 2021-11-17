@@ -36,7 +36,7 @@ export function createApi<S>(options: {
   });
 
   const handler = {
-    get: function (target: any, prop: string, receiver: any) {
+    get: function (_target: any, prop: string, _receiver: any) {
       return {
         async findAll(options?: { sort?: any }) {
           const request = async () => {
