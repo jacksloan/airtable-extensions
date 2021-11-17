@@ -13,7 +13,7 @@
     }
   },
   "projects": {
-    "airtable-cache": {
+    "airtable-api": {
       "tags": []
     },
     "airtable-codegen": {

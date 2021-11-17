@@ -1,5 +1,5 @@
 module.exports = {
-  displayName: 'airtable-cache',
+  displayName: 'airtable-api',
   preset: '../../jest.preset.js',
   globals: {
     'ts-jest': {
@@ -10,5 +10,5 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/packages/airtable-cache',
+  coverageDirectory: '../../coverage/packages/airtable-api',
 };

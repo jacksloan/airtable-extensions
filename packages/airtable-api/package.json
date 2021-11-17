@@ -1,5 +1,5 @@
 {
-  "name": "@airtable-extensions/airtable-cache",
+  "name": "@airtable-extensions/airtable-api",
   "version": "0.0.1",
   "dependencies": {
     "airtable": "^0.11.1",

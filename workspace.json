@@ -1,33 +1,33 @@
 {
   "version": 2,
   "projects": {
-    "airtable-cache": {
-      "root": "packages/airtable-cache",
-      "sourceRoot": "packages/airtable-cache/src",
+    "airtable-api": {
+      "root": "packages/airtable-api",
+      "sourceRoot": "packages/airtable-api/src",
       "projectType": "library",
       "targets": {
         "build": {
           "executor": "@nrwl/workspace:tsc",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/packages/airtable-cache",
-            "main": "packages/airtable-cache/src/index.ts",
-            "tsConfig": "packages/airtable-cache/tsconfig.lib.json",
-            "assets": ["packages/airtable-cache/*.md"]
+            "outputPath": "dist/packages/airtable-api",
+            "main": "packages/airtable-api/src/index.ts",
+            "tsConfig": "packages/airtable-api/tsconfig.lib.json",
+            "assets": ["packages/airtable-api/*.md"]
           }
         },
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "outputs": ["{options.outputFile}"],
           "options": {
-            "lintFilePatterns": ["packages/airtable-cache/**/*.ts"]
+            "lintFilePatterns": ["packages/airtable-api/**/*.ts"]
           }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/packages/airtable-cache"],
+          "outputs": ["coverage/packages/airtable-api"],
           "options": {
-            "jestConfig": "packages/airtable-cache/jest.config.js",
+            "jestConfig": "packages/airtable-api/jest.config.js",
             "passWithNoTests": true
           }
         }
