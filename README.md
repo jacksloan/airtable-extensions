@@ -2,6 +2,8 @@
 
 3rd party extensions for [airtable](https://airtable.com/)
 
+[Example usage](./apps/airkit)
+
 ## Airtable Cache
 
 Use decorators to automatically cache and rate limit api requests to airtable
