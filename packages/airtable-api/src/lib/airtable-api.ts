@@ -39,19 +39,20 @@ export function createApi<S>(options: {
     get: function (_target: any, prop: string, _receiver: any) {
       return {
         async findAll(options?: { sort?: any }) {
-          const request = async () => {
-            const records = await base
+          const request = () => {
+            return base
               .table(prop as string)
               .select(options)
-              .all();
-
-            return records.map((r) => ({
-              id: r.getId(),
-              ...Object.keys((spec as any)[prop]).reduce((acc, curr) => {
-                acc[curr] = r.get(curr) ?? null;
-                return acc;
-              }, {} as any),
-            }));
+              .all()
+              .then((records) => {
+                records.map((r) => ({
+                  id: r.getId(),
+                  ...Object.keys((spec as any)[prop]).reduce((acc, curr) => {
+                    acc[curr] = r.get(curr) ?? null;
+                    return acc;
+                  }, {} as any),
+                }));
+              });
           };
 
           const response = await rateLimitingCache.schedule(
