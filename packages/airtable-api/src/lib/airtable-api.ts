@@ -14,7 +14,7 @@ type lookupType<T> = T extends booleanType
 
 export type AirtableEntity<Model> = {
   [key in keyof Model]: lookupType<Model[key]>;
-};
+} & { id: string };
 
 type AirtableApi<Spec> = {
   [key in keyof Spec]: {
@@ -45,12 +45,13 @@ export function createApi<S>(options: {
               .select(options)
               .all();
 
-            return records.map((r) =>
-              Object.keys((spec as any)[prop]).reduce((acc, curr) => {
+            return records.map((r) => ({
+              id: r.getId(),
+              ...Object.keys((spec as any)[prop]).reduce((acc, curr) => {
                 acc[curr] = r.get(curr) ?? null;
                 return acc;
-              }, {} as any)
-            );
+              }, {} as any),
+            }));
           };
 
           const response = await rateLimitingCache.schedule(
