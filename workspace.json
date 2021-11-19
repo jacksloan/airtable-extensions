@@ -86,32 +86,6 @@
         }
       }
     },
-    "example-next-e2e": {
-      "root": "packages/example-next-e2e",
-      "sourceRoot": "packages/example-next-e2e/src",
-      "projectType": "application",
-      "targets": {
-        "e2e": {
-          "executor": "@nrwl/cypress:cypress",
-          "options": {
-            "cypressConfig": "packages/example-next-e2e/cypress.json",
-            "devServerTarget": "example-next:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "example-next:serve:production"
-            }
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "outputs": ["{options.outputFile}"],
-          "options": {
-            "lintFilePatterns": ["packages/example-next-e2e/**/*.{js,ts}"]
-          }
-        }
-      }
-    },
     "example-sveltekit": {
       "root": "packages/example-sveltekit",
       "targets": {
