@@ -30,8 +30,9 @@ export type Person = AirtableEntity<typeof modelSpec['people']>;
 export type Place = AirtableEntity<typeof modelSpec['places']>;
 
 export const api = createApi({
-  apiKey: AIRTABLE_KEY,
-  baseId: AIRTABLE_BASE,
+  // don't expose secrets in git or client app!
+  apiKey: process.env.AIRTABLE_KEY,
+  baseId: process.env.AIRTABLE_BASE,
   spec: modelSpec,
 });
 
