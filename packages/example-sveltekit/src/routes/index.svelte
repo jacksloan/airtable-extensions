@@ -1,18 +1,14 @@
 <script context="module" lang="ts">
 	export const load = async ({ fetch }) => {
 		const res = await fetch('index.json');
-		const json = await res.json();
-		return {
-			props: {
-				locations: json
-			}
-		};
+		const locations = await res.json();
+		return { props: { locations } };
 	};
 </script>
 
 <script lang="ts">
-	import type { Location } from '$lib/api';
-	export let locations: Location[];
+	import type { FolkSchool } from '$lib/api';
+	export let locations: FolkSchool[];
 </script>
 
 <h1>US Folk Schools</h1>
