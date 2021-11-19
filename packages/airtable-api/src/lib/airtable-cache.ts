@@ -205,7 +205,7 @@ export class AirtableRateLimitingCache {
   }
 
   private addNewRequestOrAwaitExisting(
-    cacheKey: string,
+    cacheKey: string | null | undefined,
     getExpiration: () => number,
     request: () => Promise<any>
   ): Observable<any> {
@@ -221,11 +221,7 @@ export class AirtableRateLimitingCache {
           take(1),
           map((res) => res.value),
           tap((value) => {
-            // console.log('setting cache item', {
-            //   cacheKey,
-            //   value,
-            // });
-            if (!pendingRequest) {
+            if (!pendingRequest && cacheKey) {
               this.setCacheItem(cacheKey, { value, expires: getExpiration() });
             }
           })
