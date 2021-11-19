@@ -22,7 +22,8 @@
     "example-next-e2e": {
       "tags": [],
       "implicitDependencies": ["example-next"]
-    }
+    },
+    "example-sveltekit": {}
   },
   "cli": {
     "defaultCollection": "@nrwl/next"

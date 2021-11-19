@@ -111,6 +111,9 @@
           }
         }
       }
+    },
+    "example-sveltekit": {
+      "root": "packages/example-sveltekit"
     }
   }
 }

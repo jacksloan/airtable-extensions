@@ -1,0 +1,6 @@
+{
+  "name": "@airtable-extensions/example-sveltekit",
+  "scripts": {
+    "test": "node index.js"
+  }
+}
