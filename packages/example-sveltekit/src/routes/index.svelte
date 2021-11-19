@@ -1,12 +1,8 @@
 <script context="module" lang="ts">
 	export const load = async ({ fetch }) => {
 		const res = await fetch('index.json');
-		const json = await res.json();
-		return {
-			props: {
-				locations: json
-			}
-		};
+		const locations = await res.json();
+		return { props: { locations } };
 	};
 </script>
 

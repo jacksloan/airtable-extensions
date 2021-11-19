@@ -3,7 +3,9 @@
 	"version": "0.0.1",
 	"scripts": {
 		"dev": "env-cmd svelte-kit dev",
-		"build": "env-cmd svelte-kit build",
+		"build": "svelte-kit build",
+		"build-and-run": "npm run build && npm run run-node",
+		"run-node": "env-cmd node build/index.js",
 		"preview": "env-cmd svelte-kit preview",
 		"check": "svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",

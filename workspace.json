@@ -120,6 +120,12 @@
           "options": {
             "script": "dev"
           }
+        },
+        "build": {
+          "executor": "@nrwl/workspace:run-script",
+          "options": {
+            "script": "build"
+          }
         }
       }
     }
