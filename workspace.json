@@ -111,23 +111,6 @@
           }
         }
       }
-    },
-    "example-sveltekit": {
-      "root": "packages/example-sveltekit",
-      "targets": {
-        "serve": {
-          "executor": "@nrwl/workspace:run-script",
-          "options": {
-            "script": "dev"
-          }
-        },
-        "build": {
-          "executor": "@nrwl/workspace:run-script",
-          "options": {
-            "script": "build"
-          }
-        }
-      }
     }
   }
 }
