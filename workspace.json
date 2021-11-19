@@ -111,6 +111,30 @@
           }
         }
       }
+    },
+    "example-sveltekit": {
+      "root": "packages/example-sveltekit",
+      "srcRoot": "packages/example-sveltekit",
+      "targets": {
+        "build": {
+          "executor": "svelte-kit",
+          "outputs": ["{options.outputPath}"],
+          "defaultConfiguration": "production",
+          "options": {
+            "root": "packages/example-sveltekit",
+            "outputPath": "dist/packages/example-sveltekit"
+          },
+          "configurations": {
+            "production": {}
+          }
+        },
+        "serve": {
+          "executor": "svelte-kit",
+          "options": {
+            "buildTarget": "dev"
+          }
+        }
+      }
     }
   }
 }
