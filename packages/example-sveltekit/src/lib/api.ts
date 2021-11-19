@@ -1,5 +1,5 @@
-import type { AirtableEntity } from '../../../airtable-api/src/index';
-import { createApi } from '../../../airtable-api/src/index';
+import type { AirtableEntity } from '@airtable-extensions/airtable-api';
+import { createApi } from '@airtable-extensions/airtable-api';
 
 const modelSpec = {
 	places: {
