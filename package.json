@@ -2,7 +2,9 @@
   "name": "airtable-extensions",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "sveltekit": "cd packages/example-sveltekit && npm run dev"
+  },
   "private": true,
   "devDependencies": {
     "@nrwl/angular": "^13.1.4",
