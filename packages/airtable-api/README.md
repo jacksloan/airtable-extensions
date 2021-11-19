@@ -1,6 +1,6 @@
 # airtable-api
 
-This library was generated with [Nx](https://nx.dev).
+airtable-api wraps the airtable javascript client to create a more type-safe alternative to accessing and updating airtable bases.
 
 ## Running unit tests
 
