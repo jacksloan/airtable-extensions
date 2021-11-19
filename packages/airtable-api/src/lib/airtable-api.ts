@@ -41,6 +41,8 @@ type AirtableApi<Spec> = {
     update(entity: Partial<AirtableEntity<Spec[key]>> & { id: string });
     create(items: Array<Omit<AirtableEntity<Spec[key]>, 'id'>>);
   };
+} & {
+  expireCacheKey(key: string): void;
 };
 
 export function createApi<S>(options: {
@@ -66,6 +68,9 @@ export function createApi<S>(options: {
   }
 
   const handler = {
+    expireCacheKey(key: string): void {
+      rateLimitingCache.expireCacheItem(key);
+    },
     get: function (_target: AirtableApi<S>, prop: string) {
       const entitySpec = spec[prop];
 

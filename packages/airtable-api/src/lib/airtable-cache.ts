@@ -204,6 +204,12 @@ export class AirtableRateLimitingCache {
     return this.cache$.getValue()[cacheKey];
   }
 
+  public expireCacheItem(cacheKey: string): void {
+    const existing = this.getCacheItem(cacheKey);
+    const expiredItem: CacheItem = { ...existing, expires: null };
+    this.setCacheItem(cacheKey, expiredItem);
+  }
+
   private addNewRequestOrAwaitExisting(
     cacheKey: string | null | undefined,
     getExpiration: () => number,
