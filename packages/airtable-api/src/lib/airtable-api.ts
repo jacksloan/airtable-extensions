@@ -146,5 +146,7 @@ export function createApi<S>(options: {
     },
   };
 
+  // TODO insteaed of using a proxy, maybe generate a complete object
+  // this would allow other use cases like an express api generator that emits a swagger/openapi spec
   return new Proxy({} as AirtableApi<S>, handler);
 }
