@@ -10,7 +10,8 @@ export enum AirtableQueueStrategy {
 }
 
 export interface AirtableCacheOptions {
-  cacheKey: string;
+  // is cache key is null or undefined, the corresponding response will not be cached
+  cacheKey: string | null | undefined;
   getExpiration?: () => number;
   queueStrategy?: AirtableQueueStrategy;
 }
