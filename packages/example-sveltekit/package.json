@@ -1,6 +1,9 @@
 {
 	"name": "example-sveltekit",
 	"version": "0.0.1",
+	"dependencies": {
+		"jbs-airtable-api-extensions": "0.0.2"
+	},
 	"scripts": {
 		"dev": "env-cmd svelte-kit dev",
 		"build": "svelte-kit build",

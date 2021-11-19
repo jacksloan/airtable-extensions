@@ -1,5 +1,5 @@
-import type { AirtableEntity } from '@airtable-extensions/airtable-api';
-import { createApi } from '@airtable-extensions/airtable-api';
+import type { AirtableEntity } from 'jbs-airtable-api-extensions';
+import { createApi } from 'jbs-airtable-api-extensions';
 
 const modelSpec = {
 	places: {
