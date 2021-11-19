@@ -4,37 +4,52 @@
 
 [Example usage](./apps/airkit)
 
-## Airtable Cache
+Quickly create typesafe APIs for your airtable bases:
 
-Use decorators to automatically cache and rate limit api requests to airtable
+### Create API Example:
 
-### Typescript Example:
+```typescript
+import { createApi } from 'jbs-airtable-api-extensions';
+import type { AirtableEntity } from 'jbs-airtable-api-extensions';
 
-```
-import {AirtableCache, AirtableQueueStrategy} from '@airtable-extensions/airtable-cache';
-import {AirtableBase} from 'airtable'
+const modelSpec = {
+  places: {
+    name: 'string',
+    lat: 'number',
+    long: 'number',
+    active: 'boolean',
+  },
+  people: {
+    firstName: 'string',
+    lastName: 'string',
+    age: 'number',
+  },
+} as const;
 
-export class Api {
+export type Person = AirtableEntity<typeof modelSpec['people']>;
+export type Place = AirtableEntity<typeof modelSpec['places']>;
 
-    constructor(
-        private airtable: AirtableBase
-    )
+export const api = createApi({
+  apiKey: AIRTABLE_KEY,
+  baseId: AIRTABLE_BASE,
+  spec: modelSpec,
+});
 
-    @AirtableCache({
-        cacheKey: 'apartments',
+// api is typesafe and will autocomplete available tables and field names
+(async () => {
+  const places = api.places.findAll({
+    // field names autocomplete based on the spec above
+    fields: [
+      'nam', // ts error! -  type '"nam"' is not assignable to type '"name" | "lat" | "long" | "active"'
+      'active',
+    ],
 
-        // cache will expire after 20 seconds
-        getExpiration: () => new Date().getTime() + 20_000
-
-
-        // only make a new request if this key has expired
-        queueStrategy: AirtableQueueStrategy.EXPIRED
-
-    })
-    findAllApartments(): Promise<Array<Apartments>> {
-		return this.airtable('apartments')
-			.select({ view: 'Grid view' })
-			.all()
-    }
-}
+    sort: [
+      {
+        field: 'activ', // ts error! -  type '"activ"' is not assignable to type '"name" | "lat" | "long" | "active"'
+        direction: 'asc',
+      },
+    ],
+  });
+})();
 ```
