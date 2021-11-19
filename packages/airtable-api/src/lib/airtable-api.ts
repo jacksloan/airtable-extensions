@@ -61,11 +61,12 @@ export function createApi<S>(options: {
 
   const handler = {
     get: function (_target: AirtableApi<S>, prop: string) {
+      const entitySpec = spec[prop];
       return {
         async findAll(options: QueryParams<FieldSet>) {
           const request = async () => {
             const records = await base.table(prop).select(options).all();
-            return records.map((record) => recordToEntity(record, spec[prop]));
+            return records.map((record) => recordToEntity(record, entitySpec));
           };
 
           const response = await rateLimitingCache.schedule(
@@ -80,12 +81,12 @@ export function createApi<S>(options: {
           return response;
         },
         async findById(recordId: string) {
-          const maybeRecord = base(prop).find(recordId);
-          return maybeRecord || null;
+          const maybeRecord = await base(prop).find(recordId);
+          return maybeRecord ? recordToEntity(maybeRecord, entitySpec) : null;
         },
         async update(entity: AirtableEntity<any>) {
           const maybeRecord = await base(prop).update(entity.id, entity);
-          return maybeRecord ? recordToEntity(maybeRecord, spec[prop]) : null;
+          return maybeRecord ? recordToEntity(maybeRecord, entitySpec) : null;
         },
         async create(items: Array<AirtableEntity<any>>) {
           const withFielsProp = (item: Record<string, any>) => ({
@@ -93,7 +94,7 @@ export function createApi<S>(options: {
           });
           const records = await base(prop).create(items.map(withFielsProp));
           return (
-            records.map((record) => recordToEntity(record, spec[prop])) || []
+            records.map((record) => recordToEntity(record, entitySpec)) || []
           );
         },
       };
