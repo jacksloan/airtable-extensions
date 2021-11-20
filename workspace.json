@@ -31,7 +31,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "example-next": {
       "root": "packages/example-next",
@@ -84,7 +85,8 @@
             "lintFilePatterns": ["packages/example-next/**/*.{ts,tsx,js,jsx}"]
           }
         }
-      }
+      },
+      "tags": []
     },
     "example-sveltekit": {
       "root": "packages/example-sveltekit",
