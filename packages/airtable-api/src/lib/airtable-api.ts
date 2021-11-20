@@ -37,7 +37,7 @@ type AirtableApi<Spec> = {
     findAll(
       options?: AirtableOptions<Spec[key]>
     ): Promise<Array<AirtableEntity<Spec[key]>>>;
-    findById(): Promise<AirtableEntity<Spec[key]> | null>;
+    findById(recordId: string): Promise<AirtableEntity<Spec[key]> | null>;
     update(entity: Partial<AirtableEntity<Spec[key]>> & { id: string });
     create(items: Array<Omit<AirtableEntity<Spec[key]>, 'id'>>);
   };

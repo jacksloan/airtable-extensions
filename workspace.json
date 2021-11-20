@@ -33,6 +33,92 @@
         }
       }
     },
+    "airtable-express-proxy": {
+      "root": "packages/airtable-express-proxy",
+      "sourceRoot": "packages/airtable-express-proxy/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/packages/airtable-express-proxy",
+            "tsConfig": "packages/airtable-express-proxy/tsconfig.lib.json",
+            "packageJson": "packages/airtable-express-proxy/package.json",
+            "main": "packages/airtable-express-proxy/src/index.ts",
+            "assets": ["packages/airtable-express-proxy/*.md"]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["packages/airtable-express-proxy/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/packages/airtable-express-proxy"],
+          "options": {
+            "jestConfig": "packages/airtable-express-proxy/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": []
+    },
+    "example-express-proxy": {
+      "root": "packages/example-express-proxy",
+      "sourceRoot": "packages/example-express-proxy/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/packages/example-express-proxy",
+            "main": "packages/example-express-proxy/src/main.ts",
+            "tsConfig": "packages/example-express-proxy/tsconfig.app.json",
+            "assets": ["packages/example-express-proxy/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "packages/example-express-proxy/src/environments/environment.ts",
+                  "with": "packages/example-express-proxy/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "example-express-proxy:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["packages/example-express-proxy/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/packages/example-express-proxy"],
+          "options": {
+            "jestConfig": "packages/example-express-proxy/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": []
+    },
     "example-next": {
       "root": "packages/example-next",
       "sourceRoot": "packages/example-next",
