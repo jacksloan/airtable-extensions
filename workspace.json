@@ -31,7 +31,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "airtable-express-proxy": {
       "root": "packages/airtable-express-proxy",
@@ -170,7 +171,8 @@
             "lintFilePatterns": ["packages/example-next/**/*.{ts,tsx,js,jsx}"]
           }
         }
-      }
+      },
+      "tags": []
     },
     "example-sveltekit": {
       "root": "packages/example-sveltekit",

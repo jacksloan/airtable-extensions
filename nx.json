@@ -8,18 +8,10 @@
     "default": {
       "runner": "@nrwl/workspace/tasks-runners/default",
       "options": {
-        "cacheableOperations": ["build", "lint", "test", "e2e"]
+        "cacheableOperations": ["build", "lint", "test", "e2e"],
+        "parallel": 1
       }
     }
-  },
-  "projects": {
-    "airtable-api": {
-      "tags": []
-    },
-    "example-next": {
-      "tags": []
-    },
-    "example-sveltekit": {}
   },
   "cli": {
     "defaultCollection": "@nrwl/next"
