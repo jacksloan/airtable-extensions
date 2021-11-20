@@ -271,7 +271,7 @@ export class AirtableRateLimitingCache {
     return requestId;
   }
 
-  private setCacheItem(cacheKey: string, item: CacheItem): void {
+  public setCacheItem(cacheKey: string, item: CacheItem): void {
     const cache = this.cache$.getValue();
     this.cache$.next({ ...cache, [cacheKey]: item });
   }

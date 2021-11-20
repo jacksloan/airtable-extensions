@@ -73,6 +73,7 @@ export function createApi<S>(options: {
     },
     get: function (_target: AirtableApi<S>, prop: string) {
       const entitySpec = spec[prop];
+      const findAllCacheKey = `findAll-${prop}`;
 
       function getFindByIdCacheKey(recordId: string): string {
         return `findById-${prop}-${recordId}`;
@@ -90,7 +91,7 @@ export function createApi<S>(options: {
               );
 
           const findAllCacheConfig: AirtableCacheOptions = {
-            cacheKey: `findAll-${prop}`,
+            cacheKey: findAllCacheKey,
             getExpiration: () => new Date().getTime() + 10_000, // cache item expires in 10 seconds
             queueStrategy: AirtableQueueStrategy.EXPIRED, // only queue requests if an item is expired
           };
@@ -114,8 +115,11 @@ export function createApi<S>(options: {
           );
         },
         async update(entity: AirtableEntity<any>) {
-          // TODO - immediately expire cached records matching this entity id
-          // TODO - immediately expire "findAll" cache records for this table
+          const cacheKey = getFindByIdCacheKey(entity.id);
+
+          // immediately expire this item in the cache
+          rateLimitingCache.expireCacheItem(cacheKey);
+
           const updateRequest = async () =>
             base(prop)
               .update(entity.id, entity)
@@ -124,23 +128,42 @@ export function createApi<S>(options: {
               );
 
           const updateCacheConfig: AirtableCacheOptions = {
-            cacheKey: getFindByIdCacheKey(entity.id),
+            cacheKey,
             getExpiration: () => new Date().getTime() + 10_000, // cache item expires in 10 seconds
-            queueStrategy: AirtableQueueStrategy.ALWAYS, // always queue updates!
+            queueStrategy: AirtableQueueStrategy.ALWAYS, // always queue updates
           };
 
           return rateLimitingCache.schedule(updateCacheConfig, updateRequest);
         },
         // TODO - schedule "create" on the rate limiting cache and set each record in the cache
-        // TODO - immediately expire "findAll" cache records associated with this table
-        async create(items: Array<AirtableEntity<any>>) {
-          const withFielsProp = (item: Record<string, any>) => ({
-            fields: item,
-          });
-          const records = await base(prop).create(items.map(withFielsProp));
-          return (
-            records.map((record) => recordToEntity(record, entitySpec)) || []
-          );
+        async create(items: Array<Omit<AirtableEntity<any>, 'id'>>) {
+          // immediately expire "findAll" cache records associated with this table
+          rateLimitingCache.expireCacheItem(findAllCacheKey);
+
+          const createRequest = async () => {
+            const created: Array<AirtableEntity<any>> = await base(prop)
+              .create(items.map((item) => ({ fields: item })))
+              .then((records) =>
+                records.map((record) => recordToEntity(record, entitySpec))
+              );
+
+            // cache each item individually after they are created
+            created.forEach((item) =>
+              rateLimitingCache.setCacheItem(getFindByIdCacheKey(item.id), {
+                expires: new Date().getTime() + 10_000,
+                value: item,
+              })
+            );
+
+            return created;
+          };
+
+          const createCacheConfig: AirtableCacheOptions = {
+            cacheKey: null, // do not cache this response
+            queueStrategy: AirtableQueueStrategy.ALWAYS, // always queue updates
+          };
+
+          rateLimitingCache.schedule(createCacheConfig, createRequest);
         },
       };
     },
