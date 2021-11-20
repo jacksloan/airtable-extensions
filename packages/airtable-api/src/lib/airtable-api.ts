@@ -6,14 +6,11 @@ import {
   AirtableRateLimitingCache,
 } from '..';
 
-type booleanType = 'boolean';
-type stringType = 'string';
-type numberType = 'number';
-type lookupType<T> = T extends booleanType
+type lookupType<T> = T extends 'boolean'
   ? boolean
-  : T extends stringType
+  : T extends 'string'
   ? string
-  : T extends numberType
+  : T extends 'number'
   ? number
   : T;
 
