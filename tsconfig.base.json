@@ -17,7 +17,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@airtable-extensions/airtable-api": [
+      "jbs-airtable-api-extensions": [
         "packages/airtable-api/src/index.ts"
       ],
       "jbs-airtable-express-proxy": [

@@ -1,4 +1,10 @@
 {
   "name": "jbs-airtable-express-proxy",
-  "version": "0.0.1"
+  "version": "0.0.1",
+  "dependencies": {
+    "jbs-airtable-api-extensions": "~0.0.3"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13"
+  }
 }

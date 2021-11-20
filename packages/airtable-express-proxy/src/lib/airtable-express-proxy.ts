@@ -1,5 +1,5 @@
 import type { Express } from 'express';
-import { createApi } from '@airtable-extensions/airtable-api';
+import { createApi } from 'jbs-airtable-api-extensions';
 
 export function addAirtableRoutes(
   app: Express,
