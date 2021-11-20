@@ -68,9 +68,6 @@ export function createApi<S>(options: {
   }
 
   const handler = {
-    expireCacheKey(key: string): void {
-      rateLimitingCache.expireCacheItem(key);
-    },
     get: function (_target: AirtableApi<S>, prop: string) {
       const entitySpec = spec[prop];
       const findAllCacheKey = `findAll-${prop}`;
@@ -135,7 +132,6 @@ export function createApi<S>(options: {
 
           return rateLimitingCache.schedule(updateCacheConfig, updateRequest);
         },
-        // TODO - schedule "create" on the rate limiting cache and set each record in the cache
         async create(items: Array<Omit<AirtableEntity<any>, 'id'>>) {
           // immediately expire "findAll" cache records associated with this table
           rateLimitingCache.expireCacheItem(findAllCacheKey);
