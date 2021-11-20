@@ -1,15 +1,11 @@
 import type { Express } from 'express';
 import { createApi } from 'jbs-airtable-api-extensions';
-import type { OpenAPIV3, OpenAPIV3_1 } from 'openapi-types';
+import type { OpenAPIV3 } from 'openapi-types';
 import * as swaggerUi from 'swagger-ui-express';
-
-interface GenericAirtableSpec {
-  // tableName
-  [k: string]: {
-    // fieldName
-    [k: string]: 'string' | 'boolean' | 'number';
-  };
-}
+import { GenericAirtableSpec } from './model';
+import { addOpenApiComponentSchemas } from './openapi-component-schema';
+import { addOpenApiFindAllPath } from './openapi-find-all';
+import { addOpenApiFindByIdPath } from './openapi-find-by-id';
 
 export function addAirtableRoutes(
   app: Express,
@@ -68,105 +64,4 @@ export function addAirtableRoutes(
   app.get('/openapi', (req, res) => res.send(openapi));
 
   return openapi;
-}
-
-function addOpenApiFindByIdPath(
-  openapi: OpenAPIV3.Document,
-  pathPrefix: string,
-  tableName: string
-) {
-  const path = `${pathPrefix}/{recordId}`;
-  const previous = openapi.paths[path] || {};
-  const findByIdPathObject: OpenAPIV3.PathItemObject = {
-    get: {
-      summary: `Find a ${tableName} record by record Id`,
-      operationId: `findById${tableName}`,
-      tags: [tableName],
-      parameters: [
-        {
-          in: 'path',
-          name: 'recordId',
-          description: 'The unique ID of the airtable record',
-        },
-      ],
-      responses: {
-        '200': {
-          description: `Returns a single ${tableName} record`,
-          content: {
-            'application/json': {
-              schema: {
-                $ref: `#/components/schemas/${getEntityName(tableName)}`,
-              },
-            },
-          },
-        },
-      },
-    },
-  };
-  openapi.paths[path] = { ...previous, ...findByIdPathObject };
-}
-
-function getEntityName(tableName: string, isArray = false) {
-  const entityName = `${titleCaseString(tableName)}Entity`;
-  return `${entityName}${isArray ? 'Array' : ''}`;
-}
-
-function addOpenApiFindAllPath(
-  openapi: OpenAPIV3.Document,
-  path: string,
-  tableName: string
-) {
-  const findAllPathObject: OpenAPIV3.PathItemObject = {
-    get: {
-      summary: `List all ${tableName}`,
-      operationId: `findAll${tableName}`,
-      tags: [tableName],
-      responses: {
-        '200': {
-          description: `An array of all ${tableName}`,
-          content: {
-            'application/json': {
-              schema: {
-                $ref: `#/components/schemas/${getEntityName(tableName, true)}`,
-              },
-            },
-          },
-        },
-      },
-    },
-  };
-  const previous = openapi.paths[path] || {};
-  openapi.paths[path] = { ...previous, ...findAllPathObject };
-}
-
-function addOpenApiComponentSchemas(
-  openapi: OpenAPIV3.Document,
-  airtableSpec: GenericAirtableSpec,
-  tableName: string
-): void {
-  openapi.components.schemas[getEntityName(tableName)] = {
-    type: 'object',
-    required: ['id'],
-    properties: {
-      id: {
-        type: 'integer',
-      },
-      ...Object.entries(airtableSpec[tableName]).reduce((acc, curr) => {
-        const [key, propertyType] = curr;
-        acc[key] = { type: propertyType };
-        return acc;
-      }, {}),
-    },
-  };
-  openapi.components.schemas[getEntityName(tableName, true)] = {
-    type: 'array',
-    items: {
-      $ref: `#/components/schemas/${getEntityName(tableName)}`,
-    },
-  };
-}
-
-function titleCaseString(it: string): string {
-  const [first, ...rest] = it;
-  return [first.toUpperCase(), ...rest].join('');
 }
