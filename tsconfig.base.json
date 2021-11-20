@@ -18,6 +18,9 @@
     "paths": {
       "@airtable-extensions/airtable-api": [
         "packages/airtable-api/src/index.ts"
+      ],
+      "jbs-airtable-express-proxy": [
+        "packages/airtable-express-proxy/src/index.ts"
       ]
     }
   },

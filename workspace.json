@@ -34,6 +34,40 @@
       },
       "tags": []
     },
+    "airtable-express-proxy": {
+      "root": "packages/airtable-express-proxy",
+      "sourceRoot": "packages/airtable-express-proxy/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/packages/airtable-express-proxy",
+            "tsConfig": "packages/airtable-express-proxy/tsconfig.lib.json",
+            "packageJson": "packages/airtable-express-proxy/package.json",
+            "main": "packages/airtable-express-proxy/src/index.ts",
+            "assets": ["packages/airtable-express-proxy/*.md"]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["packages/airtable-express-proxy/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/packages/airtable-express-proxy"],
+          "options": {
+            "jestConfig": "packages/airtable-express-proxy/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": []
+    },
     "example-next": {
       "root": "packages/example-next",
       "sourceRoot": "packages/example-next",
