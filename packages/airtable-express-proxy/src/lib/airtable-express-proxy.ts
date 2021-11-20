@@ -34,9 +34,9 @@ export function addAirtableRoutes(
       airtable[tableName].findAll().then((it) => res.send(it));
     });
 
-    app.get(`${prefix}/${tableName}/:${tableName}Id`, (req, res) => {
-      const id = req.params[`${tableName}Id`];
-      airtable[tableName].findById(id).then(res.send);
+    app.get(`${prefix}/${tableName}/:recordId`, (req, res) => {
+      const { recordId } = req.params;
+      airtable[tableName].findById(recordId).then((value) => res.send(value));
     });
   });
 }
