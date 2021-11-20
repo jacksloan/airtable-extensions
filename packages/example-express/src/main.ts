@@ -5,7 +5,7 @@
 
 import express from 'express';
 import { addAirtableRoutes } from 'jbs-airtable-express-proxy';
-import * as dotenv from "dotenv";
+import * as dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -31,12 +31,19 @@ const airtableSpec = {
   },
 } as const;
 
-addAirtableRoutes(app, {
-  globalRoutePrefix: '/api',
-  airtableSpec,
-  airtableApiKey: process.env.AIRTABLE_KEY,
-  airtableBaseId: process.env.AIRTABLE_BASE,
-});
+addAirtableRoutes(
+  app,
+  {
+    globalRoutePrefix: '/api',
+    airtableSpec,
+    airtableApiKey: process.env.AIRTABLE_KEY,
+    airtableBaseId: process.env.AIRTABLE_BASE,
+  },
+  {
+    title: 'Express Airtable Proxy Example',
+    version: '1.0.0',
+  }
+);
 
 const port = process.env.port || 3333;
 const server = app.listen(port, () => {
