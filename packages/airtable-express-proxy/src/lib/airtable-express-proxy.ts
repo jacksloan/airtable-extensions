@@ -5,11 +5,13 @@ import * as swaggerUi from 'swagger-ui-express';
 import { addDeleteRoute } from './add-delete-route';
 import { addFindAllRoute } from './add-find-all-route';
 import { addFindByIdRoute } from './add-find-by-id-route';
+import { addUpdateRoute } from './add-update-route.ts';
 import { GenericAirtableSpec } from './model';
 import { addOpenApiComponentSchemas } from './openapi-component-schema';
 import { addOpenApiDeletePath } from './openapi-delete';
 import { addOpenApiFindAllPath } from './openapi-find-all';
 import { addOpenApiFindByIdPath } from './openapi-find-by-id';
+import { addOpenApiUpdatePath } from './openapi-update';
 
 export function createAirtableProxyRoutes(
   expressApp: Express,
@@ -54,21 +56,29 @@ export function createAirtableProxyRoutes(
     // TODO - SECURITY! return 403 forbidden by default
     // TODO - make required auth/login middleware as part of config
     // TODO - create endpoints
-    // TODO - update endpoints
 
     const entityModel = config.airtableSpec[tableName];
     addOpenApiComponentSchemas(openapi, entityModel, tableName);
 
     const basePath = `${prefix}/${tableName}`;
 
+    // find all
     addOpenApiFindAllPath(openapi, basePath, tableName, entityModel);
     addFindAllRoute(expressApp, airtable, basePath, tableName);
 
+    // find one
     addOpenApiFindByIdPath(openapi, basePath, tableName);
     addFindByIdRoute(expressApp, airtable, basePath, tableName);
 
+    // update
+    addOpenApiUpdatePath(openapi, basePath, tableName);
+    addUpdateRoute(expressApp, airtable, basePath, tableName);
+
+    // delete
     addOpenApiDeletePath(openapi, basePath, tableName);
     addDeleteRoute(expressApp, airtable, basePath, tableName);
+
+    // create
   });
 
   expressApp.use('/api', swaggerUi.serve, swaggerUi.setup(openapi));
