@@ -54,8 +54,7 @@ export function createAirtableProxyRoutes(
 
   Object.keys(config.airtableSpec).forEach((tableName) => {
     // TODO - SECURITY! return 403 forbidden by default
-    // TODO - make required auth/login middleware as part of config
-    // TODO - create endpoints
+    // make required auth/login middleware as part of config
 
     const entityModel = config.airtableSpec[tableName];
     addOpenApiComponentSchemas(openapi, entityModel, tableName);
