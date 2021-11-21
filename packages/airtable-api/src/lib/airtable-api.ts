@@ -1,12 +1,11 @@
 import airtable, { FieldSet, Record as AirtableRecord } from 'airtable';
 import { QueryParams } from 'airtable/lib/query_params';
-import { access } from 'fs';
 import {
   AirtableCacheOptions,
   AirtableQueueStrategy,
   AirtableRateLimitingCache,
 } from '..';
-import { omitId, omit } from './utils';
+import { omitId } from './utils';
 
 type lookupType<T> = T extends 'boolean'
   ? boolean
