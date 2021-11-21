@@ -26,7 +26,9 @@ export function addOpenApiFindByIdPath(
           content: {
             'application/json': {
               schema: {
-                $ref: `#/components/schemas/${getEntityName(tableName)}`,
+                $ref: `#/components/schemas/${getEntityName(
+                  tableName
+                ).simpleName()}`,
               },
             },
           },

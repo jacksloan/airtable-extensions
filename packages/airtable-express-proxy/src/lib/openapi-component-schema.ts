@@ -4,27 +4,34 @@ import { getEntityName } from './openapi-get-entity-name';
 
 export function addOpenApiComponentSchemas(
   openapi: OpenAPIV3.Document,
-  airtableSpec: GenericAirtableSpec,
+  airtableEntityModel: GenericAirtableSpec[string],
   tableName: string
 ): void {
-  openapi.components.schemas[getEntityName(tableName)] = {
+  const name = getEntityName(tableName).simpleName();
+  const arrayName = getEntityName(tableName).arrayName();
+  const propsEnum = getEntityName(tableName).propertyEnumsName();
+  openapi.components.schemas[name] = {
     type: 'object',
     required: ['id'],
     properties: {
       id: {
         type: 'integer',
       },
-      ...Object.entries(airtableSpec[tableName]).reduce((acc, curr) => {
+      ...Object.entries(airtableEntityModel).reduce((acc, curr) => {
         const [key, propertyType] = curr;
         acc[key] = { type: propertyType };
         return acc;
       }, {}),
     },
   };
-  openapi.components.schemas[getEntityName(tableName, true)] = {
+  openapi.components.schemas[arrayName] = {
     type: 'array',
     items: {
-      $ref: `#/components/schemas/${getEntityName(tableName)}`,
+      $ref: `#/components/schemas/${name}`,
     },
+  };
+  openapi.components.schemas[propsEnum] = {
+    type: 'string',
+    enum: Object.keys(airtableEntityModel),
   };
 }

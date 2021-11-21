@@ -2,13 +2,15 @@ import type { Express } from 'express';
 import { createApi } from 'jbs-airtable-api-extensions';
 import type { OpenAPIV3 } from 'openapi-types';
 import * as swaggerUi from 'swagger-ui-express';
+import { addFindAllRoute } from './add-find-all-route';
+import { addFindByIdRoute } from './add-find-by-id-route';
 import { GenericAirtableSpec } from './model';
 import { addOpenApiComponentSchemas } from './openapi-component-schema';
 import { addOpenApiFindAllPath } from './openapi-find-all';
 import { addOpenApiFindByIdPath } from './openapi-find-by-id';
 
 export function addAirtableRoutes(
-  app: Express,
+  expressApp: Express,
   config: {
     globalRoutePrefix?: `/${string}`;
     airtableSpec: GenericAirtableSpec;
@@ -31,7 +33,16 @@ export function addAirtableRoutes(
     info: openapiInfo,
     paths: {},
     components: {
-      schemas: {},
+      schemas: {
+        SortDirection: {
+          type: 'string',
+          enum: ['asc', 'desc'],
+        },
+        CellFormat: {
+          type: 'string',
+          enum: ['json', 'string'],
+        },
+      },
     },
   };
 
@@ -42,26 +53,21 @@ export function addAirtableRoutes(
     // TODO - make required auth/login middleware as part of config
     // TODO - create endpoints
     // TODO - update endpoints
-    // TODO - swagger and swagger-ui endpoints
 
-    addOpenApiComponentSchemas(openapi, config.airtableSpec, tableName);
+    const entityModel = config.airtableSpec[tableName];
+    addOpenApiComponentSchemas(openapi, entityModel, tableName);
 
     const findAllPath = `${prefix}/${tableName}`;
-    addOpenApiFindAllPath(openapi, findAllPath, tableName);
-    app.get(findAllPath, (req, res) => {
-      airtable[tableName].findAll().then((it) => res.send(it));
-    });
+    addOpenApiFindAllPath(openapi, findAllPath, tableName, entityModel);
+    addFindAllRoute(expressApp, airtable, findAllPath, tableName);
 
     const findByIdPathPrefix = `${prefix}/${tableName}`;
     addOpenApiFindByIdPath(openapi, findByIdPathPrefix, tableName);
-    app.get(`${findByIdPathPrefix}/:recordId`, (req, res) => {
-      const { recordId } = req.params;
-      airtable[tableName].findById(recordId).then((value) => res.send(value));
-    });
+    addFindByIdRoute(expressApp, airtable, findByIdPathPrefix, tableName);
   });
 
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapi));
-  app.get('/openapi', (req, res) => res.send(openapi));
+  expressApp.use('/api', swaggerUi.serve, swaggerUi.setup(openapi));
+  expressApp.get('/openapi', (req, res) => res.send(openapi));
 
   return openapi;
 }

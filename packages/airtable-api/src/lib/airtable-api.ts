@@ -18,9 +18,10 @@ export type AirtableEntity<Model> = {
   [key in keyof Model]: lookupType<Model[key]>;
 } & { id: string };
 
-type AirtableOptions<T> = {
+export type AirtableOptions<T> = {
   fields?: Array<keyof T>;
   maxRecords?: number;
+  filterByFormula?: string;
   pageSize?: number;
   view?: string;
   cellFormat?: 'json' | 'string';
@@ -29,7 +30,7 @@ type AirtableOptions<T> = {
   sort?: Array<{ field: keyof T; direction: 'asc' | 'desc' }>;
 };
 
-type AirtableApi<Spec> = {
+export type AirtableApi<Spec> = {
   [key in keyof Spec]: {
     findAll(
       options?: AirtableOptions<Spec[key]>

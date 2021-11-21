@@ -1,6 +1,9 @@
-export function getEntityName(tableName: string, isArray = false) {
-  const entityName = `${titleCaseString(tableName)}Entity`;
-  return `${entityName}${isArray ? 'Array' : ''}`;
+export function getEntityName(tableName: string) {
+  return {
+    simpleName: () => `${titleCaseString(tableName)}`,
+    arrayName: () => `${titleCaseString(tableName)}Entity`,
+    propertyEnumsName: () => `${titleCaseString(tableName)}Properties`,
+  };
 }
 
 function titleCaseString(it: string): string {
