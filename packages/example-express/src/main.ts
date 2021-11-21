@@ -4,7 +4,7 @@
  */
 
 import express from 'express';
-import { addAirtableRoutes } from 'jbs-airtable-express-proxy';
+import { createAirtableProxyRoutes } from 'jbs-airtable-express-proxy';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -31,7 +31,7 @@ const airtableSpec = {
   },
 } as const;
 
-addAirtableRoutes(
+createAirtableProxyRoutes(
   app,
   {
     globalRoutePrefix: '/api',

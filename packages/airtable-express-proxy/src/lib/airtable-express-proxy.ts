@@ -2,14 +2,16 @@ import type { Express } from 'express';
 import { createApi } from 'jbs-airtable-api-extensions';
 import type { OpenAPIV3 } from 'openapi-types';
 import * as swaggerUi from 'swagger-ui-express';
+import { addDeleteRoute } from './add-delete-route';
 import { addFindAllRoute } from './add-find-all-route';
 import { addFindByIdRoute } from './add-find-by-id-route';
 import { GenericAirtableSpec } from './model';
 import { addOpenApiComponentSchemas } from './openapi-component-schema';
+import { addOpenApiDeletePath } from './openapi-delete';
 import { addOpenApiFindAllPath } from './openapi-find-all';
 import { addOpenApiFindByIdPath } from './openapi-find-by-id';
 
-export function addAirtableRoutes(
+export function createAirtableProxyRoutes(
   expressApp: Express,
   config: {
     globalRoutePrefix?: `/${string}`;
@@ -57,13 +59,16 @@ export function addAirtableRoutes(
     const entityModel = config.airtableSpec[tableName];
     addOpenApiComponentSchemas(openapi, entityModel, tableName);
 
-    const findAllPath = `${prefix}/${tableName}`;
-    addOpenApiFindAllPath(openapi, findAllPath, tableName, entityModel);
-    addFindAllRoute(expressApp, airtable, findAllPath, tableName);
+    const basePath = `${prefix}/${tableName}`;
 
-    const findByIdPathPrefix = `${prefix}/${tableName}`;
-    addOpenApiFindByIdPath(openapi, findByIdPathPrefix, tableName);
-    addFindByIdRoute(expressApp, airtable, findByIdPathPrefix, tableName);
+    addOpenApiFindAllPath(openapi, basePath, tableName, entityModel);
+    addFindAllRoute(expressApp, airtable, basePath, tableName);
+
+    addOpenApiFindByIdPath(openapi, basePath, tableName);
+    addFindByIdRoute(expressApp, airtable, basePath, tableName);
+
+    addOpenApiDeletePath(openapi, basePath, tableName);
+    addDeleteRoute(expressApp, airtable, basePath, tableName);
   });
 
   expressApp.use('/api', swaggerUi.serve, swaggerUi.setup(openapi));

@@ -38,6 +38,7 @@ export type AirtableApi<Spec> = {
     findById(recordId: string): Promise<AirtableEntity<Spec[key]> | null>;
     update(entity: Partial<AirtableEntity<Spec[key]>> & { id: string });
     create(items: Array<Omit<AirtableEntity<Spec[key]>, 'id'>>);
+    delete(recordId: string): Promise<void>;
   };
 } & {
   expireCacheKey(key: string): void;
@@ -130,15 +131,15 @@ export function createApi<S>(options: {
 
           return rateLimitingCache.schedule(updateCacheConfig, updateRequest);
         },
-        async delete(entity: AirtableEntity<any>) {
-          const cacheKey = getFindByIdCacheKey(entity.id);
+        async delete(recordId: string) {
+          const cacheKey = getFindByIdCacheKey(recordId);
 
           // immediately expire this item in the cache
           rateLimitingCache.expireCacheItem(cacheKey);
 
           const deleteRequest = async () =>
             base(prop)
-              .destroy(entity.id)
+              .destroy(recordId)
               .then((maybeRecord) =>
                 maybeRecord ? recordToEntity(maybeRecord, entitySpec) : null
               );
@@ -148,7 +149,7 @@ export function createApi<S>(options: {
             queueStrategy: AirtableQueueStrategy.ALWAYS, // always queue updates
           };
 
-          return rateLimitingCache.schedule(updateCacheConfig, deleteRequest);
+          await rateLimitingCache.schedule(updateCacheConfig, deleteRequest);
         },
         async create(items: Array<Omit<AirtableEntity<any>, 'id'>>) {
           // immediately expire "findAll" cache records associated with this table
