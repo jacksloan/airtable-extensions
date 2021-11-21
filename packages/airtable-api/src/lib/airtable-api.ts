@@ -130,6 +130,26 @@ export function createApi<S>(options: {
 
           return rateLimitingCache.schedule(updateCacheConfig, updateRequest);
         },
+        async delete(entity: AirtableEntity<any>) {
+          const cacheKey = getFindByIdCacheKey(entity.id);
+
+          // immediately expire this item in the cache
+          rateLimitingCache.expireCacheItem(cacheKey);
+
+          const deleteRequest = async () =>
+            base(prop)
+              .destroy(entity.id)
+              .then((maybeRecord) =>
+                maybeRecord ? recordToEntity(maybeRecord, entitySpec) : null
+              );
+
+          const updateCacheConfig: AirtableCacheOptions = {
+            cacheKey: null,
+            queueStrategy: AirtableQueueStrategy.ALWAYS, // always queue updates
+          };
+
+          return rateLimitingCache.schedule(updateCacheConfig, deleteRequest);
+        },
         async create(items: Array<Omit<AirtableEntity<any>, 'id'>>) {
           // immediately expire "findAll" cache records associated with this table
           rateLimitingCache.expireCacheItem(findAllCacheKey);
