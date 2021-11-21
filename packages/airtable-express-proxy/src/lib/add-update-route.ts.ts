@@ -9,7 +9,7 @@ export function addUpdateRoute(
 ) {
   expressApp.put(`${basePath}/:recordId`, (req, res) => {
     const { recordId } = req.params;
-    const { record } = req.body;
+    const record = req.body; // todo need to add body parser
     if (recordId !== record.id) {
       res
         .status(400)

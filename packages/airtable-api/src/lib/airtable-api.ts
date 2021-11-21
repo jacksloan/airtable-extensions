@@ -1,10 +1,12 @@
 import airtable, { FieldSet, Record as AirtableRecord } from 'airtable';
 import { QueryParams } from 'airtable/lib/query_params';
+import { access } from 'fs';
 import {
   AirtableCacheOptions,
   AirtableQueueStrategy,
   AirtableRateLimitingCache,
 } from '..';
+import { omitId, omit } from './utils';
 
 type lookupType<T> = T extends 'boolean'
   ? boolean
@@ -37,7 +39,7 @@ export type AirtableApi<Spec> = {
     ): Promise<Array<AirtableEntity<Spec[key]>>>;
     findById(recordId: string): Promise<AirtableEntity<Spec[key]> | null>;
     update(entity: Partial<AirtableEntity<Spec[key]>> & { id: string });
-    create(items: Array<Omit<AirtableEntity<Spec[key]>, 'id'>>);
+    create(items: Array<AirtableEntity<Spec[key]>>);
     delete(recordId: string): Promise<void>;
   };
 } & {
@@ -118,7 +120,7 @@ export function createApi<S>(options: {
 
           const updateRequest = async () =>
             base(prop)
-              .update(entity.id, entity)
+              .update(entity.id, omitId(entity))
               .then((maybeRecord) =>
                 maybeRecord ? recordToEntity(maybeRecord, entitySpec) : null
               );
@@ -151,13 +153,13 @@ export function createApi<S>(options: {
 
           await rateLimitingCache.schedule(updateCacheConfig, deleteRequest);
         },
-        async create(items: Array<Omit<AirtableEntity<any>, 'id'>>) {
+        async create(items: Array<AirtableEntity<any>>) {
           // immediately expire "findAll" cache records associated with this table
           rateLimitingCache.expireCacheItem(findAllCacheKey);
 
           const createRequest = async () => {
             const created: Array<AirtableEntity<any>> = await base(prop)
-              .create(items.map((item) => ({ fields: item })))
+              .create(items.map((item) => ({ fields: omitId(item) })))
               .then((records) =>
                 records.map((record) => recordToEntity(record, entitySpec))
               );

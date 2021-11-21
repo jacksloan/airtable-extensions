@@ -24,7 +24,13 @@ export function addOpenApiUpdatePath(
         },
       ],
       requestBody: {
-        $ref: componentSchemaName,
+        content: {
+          'application/json': {
+            schema: {
+              $ref: componentSchemaName,
+            }
+          }
+        },
       },
       responses: {
         '201': {
