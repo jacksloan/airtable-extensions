@@ -28,7 +28,6 @@
   "type": "module",
   "dependencies": {
     "airtable": "^0.11.1",
-    "env-cmd": "^10.1.0",
     "jbs-airtable-api-extensions": "^0.0.2"
   }
 }
