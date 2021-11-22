@@ -6,10 +6,9 @@ import {
   merge,
   Observable,
   of,
-  timer,
+  Subscription,
 } from 'rxjs';
 import {
-  delayWhen,
   concatMap,
   exhaustMap,
   filter,
@@ -17,7 +16,6 @@ import {
   scan,
   shareReplay,
   switchMap,
-  switchMapTo,
   take,
   tap,
 } from 'rxjs/operators';
@@ -26,6 +24,7 @@ import {
   AirtableCacheOptions,
   AirtableQueueStrategy,
 } from './airtable-cache.model';
+import { rateLimit } from './rxjs-rate-limit';
 
 interface CacheItem {
   value: any;
@@ -60,17 +59,16 @@ export class AirtableRateLimitingCache {
   });
   readonly pendingByRequestId$: Observable<{ [k: string]: QueueRequest }>;
   readonly pendingByCacheKey$: Observable<{ [k: string]: QueueRequest[] }>;
-  readonly lastRequestTime$: BehaviorSubject<number> = new BehaviorSubject(
-    new Date().getTime() - this.config.throttleTime
-  );
 
   readonly cache$: BehaviorSubject<Record<string, CacheItem>> =
     new BehaviorSubject({});
 
+  private subscription = new Subscription();
+
   constructor(
     public config = {
       // The API is limited to 5 requests per second per base. If you exceed this rate, you will receive a 429 status code and will need to wait 30 seconds before subsequent requests will succeed.
-      throttleTime: 250,
+      maxRequestsPerSecond: 5,
     }
   ) {
     this.pendingByRequestId$ = merge(this.requests$, this.responses$).pipe(
@@ -91,42 +89,24 @@ export class AirtableRateLimitingCache {
       shareReplay(1)
     );
 
-    this.requests$
-      .pipe(
-        concatMap((req) => {
-          const { requestId, observable: request } = req;
-
-          return this.lastRequestTime$.pipe(
-            take(1),
-            delayWhen((lastRequestTime) => {
-              const delay = this.calculateDelayTime(lastRequestTime);
-              return timer(delay);
-            }),
-            tap(() => this.lastRequestTime$.next(new Date().getTime())),
-            switchMapTo(request),
-            tap((response) =>
-              this.responses$.next({
-                requestId,
-                type: 'RESPONSE',
-                value: response,
-              })
+    this.subscription.add(
+      this.requests$
+        .pipe(
+          rateLimit(this.config.maxRequestsPerSecond),
+          concatMap((req) =>
+            req.observable.pipe(
+              tap((response) =>
+                this.responses$.next({
+                  requestId: req.requestId,
+                  type: 'RESPONSE',
+                  value: response,
+                })
+              )
             )
-          );
-        })
-      )
-      .subscribe(); // TODO, don't forget to unsubscribe
-
-    // this.pendingByRequestId$.subscribe((pendingByRequestId$) => {
-    //   console.log({ pendingByRequestId$ });
-    // });
-
-    // this.requests$.subscribe((requests$) => {
-    //   console.log({ requests$ });
-    // });
-
-    // this.responses$.subscribe((responses$) => {
-    //   console.log({ responses$ });
-    // });
+          )
+        )
+        .subscribe()
+    );
   }
 
   /**
@@ -212,6 +192,11 @@ export class AirtableRateLimitingCache {
     }
   }
 
+  // call when done with this airtable cache
+  public destroy(): void {
+    this.subscription.unsubscribe();
+  }
+
   private addNewRequestOrAwaitExisting(
     cacheKey: string | null | undefined,
     getExpiration: () => number,
@@ -236,22 +221,6 @@ export class AirtableRateLimitingCache {
         );
       })
     );
-  }
-
-  /**
-   * Calculates the minimum amout of time needed to
-   * schedule a new request without exceeding the throttle time
-   * @param lastRequestTime time since the last request was made to airtable
-   * @param throttleTime minimum time between requests
-   * @returns
-   */
-  private calculateDelayTime(
-    lastRequestTime: number,
-    throttleTime = this.config.throttleTime
-  ): number {
-    const timeSinceLastRequest = new Date().getTime() - lastRequestTime;
-    const delay = throttleTime - timeSinceLastRequest;
-    return delay > 0 ? delay : 0;
   }
 
   /**
