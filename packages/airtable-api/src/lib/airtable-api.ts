@@ -53,7 +53,7 @@ export function createApi<S>(options: {
   const { spec, apiKey, baseId } = options;
   const base = new airtable({ apiKey }).base(baseId);
   const rateLimitingCache = new AirtableRateLimitingCache({
-    throttleTime: 200,
+    maxRequestsPerSecond: 5,
   });
 
   function recordToEntity(record: AirtableRecord<any>, entitySpec) {
