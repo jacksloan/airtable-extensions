@@ -3,12 +3,14 @@ import type { Express } from 'express';
 import { createApi } from 'jbs-airtable-api-extensions';
 import type { OpenAPIV3 } from 'openapi-types';
 import * as swaggerUi from 'swagger-ui-express';
+import { addCreateRoute } from './lib/add-create-route';
 import { addDeleteRoute } from './lib/add-delete-route';
 import { addFindAllRoute } from './lib/add-find-all-route';
 import { addFindByIdRoute } from './lib/add-find-by-id-route';
 import { addUpdateRoute } from './lib/add-update-route.ts';
 import { GenericAirtableSpec } from './lib/model';
 import { addOpenApiComponentSchemas } from './lib/openapi-component-schema';
+import { addOpenApiCreatePath } from './lib/openapi-create';
 import { addOpenApiDeletePath } from './lib/openapi-delete';
 import { addOpenApiFindAllPath } from './lib/openapi-find-all';
 import { addOpenApiFindByIdPath } from './lib/openapi-find-by-id';
@@ -81,6 +83,8 @@ export function createAirtableProxyRoutes(
     addDeleteRoute(expressApp, airtable, basePath, tableName);
 
     // create
+    addOpenApiCreatePath(openapi, basePath, tableName);
+    addCreateRoute(expressApp, airtable, basePath, tableName);
   });
 
   expressApp.use('/api', swaggerUi.serve, swaggerUi.setup(openapi));
