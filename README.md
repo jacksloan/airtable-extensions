@@ -38,7 +38,7 @@ export const api = createApi({
 
 // api is typesafe and will autocomplete available tables and field names
 (async () => {
-  const places = api.places.findAll({
+  const places: Place[] = await api.places.findAll({
     // field names autocomplete based on the spec above
     fields: [
       'nam', // ts error! -  type '"nam"' is not assignable to type '"name" | "lat" | "long" | "active"'
