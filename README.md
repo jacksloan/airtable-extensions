@@ -8,7 +8,7 @@ Quickly create typesafe APIs for your airtable bases:
 
 API requests are automatically rate-limited and queued if the request would exceed the max of 5 requests per second.
 
-### Create API Example:
+### Airtable client example:
 
 ```typescript
 import { createApi } from 'jbs-airtable-api-extensions';
