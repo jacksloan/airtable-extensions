@@ -2,8 +2,6 @@
 
 3rd party extensions for [airtable](https://airtable.com/)
 
-[Example usage](./apps/airkit)
-
 Quickly create typesafe APIs for your airtable bases:
 
 API requests are automatically rate-limited and queued if the request would exceed the requests limit of 5 per second.
