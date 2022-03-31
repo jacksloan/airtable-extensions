@@ -6,7 +6,7 @@
 
 Quickly create typesafe APIs for your airtable bases:
 
-API requests are automatically rate-limited and queued if the request would exceed the max of 5 requests per second.
+API requests are automatically rate-limited and queued if the request would exceed the requests limit of 5 per second.
 
 ### Airtable client example:
 
