@@ -59,7 +59,8 @@ export const api = createApi({
 
 ### Airtable proxy example:
 Navigate to http://localhost:3333/openapi to test api routes in the Swagger browser
-```
+
+```typescript
 import express from 'express';
 import { createAirtableProxyRoutes } from 'jbs-airtable-express-proxy';
 import * as dotenv from 'dotenv';
